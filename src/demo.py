@@ -1,18 +1,10 @@
-"""Load SQL files and query a file-backed DuckDB database."""
-
 from pathlib import Path
-
 import duckdb
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
 DB_PATH = DATA_DIR / "demo.duckdb"
 SQL_DIR = ROOT / "sql"
-
-
-def _read_sql(name: str) -> str:
-    path = SQL_DIR / name
-    return path.read_text(encoding="utf-8")
 
 
 def main() -> None:
@@ -32,6 +24,11 @@ def main() -> None:
     print(" ".join(cols))
     for row in rows:
         print(" ".join(str(v) for v in row))
+
+
+def _read_sql(name: str) -> str:
+    path = SQL_DIR / name
+    return path.read_text(encoding="utf-8")
 
 
 if __name__ == "__main__":
