@@ -1,13 +1,16 @@
--- Demo schema: small training dataset for Git/SQL diffs.
-DROP TABLE IF EXISTS commits;
-CREATE TABLE commits (
+-- Demo schema: small sales dataset for Git/SQL diffs.
+DROP TABLE IF EXISTS sales;
+CREATE TABLE sales (
     id INTEGER PRIMARY KEY,
-    author TEXT NOT NULL,
-    message TEXT NOT NULL,
-    lines_changed INTEGER NOT NULL DEFAULT 0
+    region TEXT NOT NULL,
+    product TEXT NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL
 );
 
-INSERT INTO commits VALUES
-    (1, 'alex', 'Add DuckDB connection', 42),
-    (2, 'alex', 'Document uv workflow', 18),
-    (3, 'sam', 'Fix typo in README', 3);
+INSERT INTO sales VALUES
+    (1, 'West', 'Widget', 199.00),
+    (2, 'West', 'Gadget', 45.50),
+    (3, 'East', 'Widget', 210.00),
+    (4, 'East', 'Service plan', 89.99),
+    (5, 'Central', 'Gadget', 52.00),
+    (6, 'West', 'Widget', 199.00);

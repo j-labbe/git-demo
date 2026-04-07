@@ -21,9 +21,17 @@ def main() -> None:
     finally:
         conn.close()
 
-    print(" ".join(cols))
+    print("Aggregation: sales by region\n")
+    col_widths = [max(len(c), max((len(str(r[i])) for r in rows), default=0)) for i, c in enumerate(cols)]
+    header = "  ".join(c.ljust(col_widths[i]) for i, c in enumerate(cols))
+    print(header)
+    print("  ".join("-" * w for w in col_widths))
     for row in rows:
-        print(" ".join(str(v) for v in row))
+        print("  ".join(str(v).ljust(col_widths[i]) for i, v in enumerate(row)))
+
+    total_orders = sum(r[1] for r in rows)
+    total_revenue = sum(float(r[2]) for r in rows)
+    print(f"\nTotals (rolled up): {total_orders} orders, ${total_revenue:,.2f} revenue")
 
 
 def _read_sql(name: str) -> str:

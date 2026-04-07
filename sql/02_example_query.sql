@@ -1,5 +1,9 @@
 -- Example analytical query (good file to branch on for training).
-SELECT author, SUM(lines_changed) AS total_lines
-FROM commits
-GROUP BY author
-ORDER BY total_lines DESC;
+SELECT
+    region,
+    COUNT(*) AS orders,
+    SUM(amount) AS revenue,
+    ROUND(AVG(amount), 2) AS avg_order_value
+FROM sales
+GROUP BY region
+ORDER BY revenue DESC;
