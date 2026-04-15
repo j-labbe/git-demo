@@ -1,5 +1,5 @@
 # wrangler.toml
-name = 'git-python-demo'
+name = 'git-demo'
 main = "src/index.ts"
 compatibility_date = "2024-12-01"
 
@@ -15,4 +15,4 @@ directory = "./static"
 [[d1_databases]]
 binding = "DB"
 database_name = "DB"
-database_id = "00000000-0000-0000-0000-000000000001"
+database_id = "ec9e8aa8-090a-42fa-964c-9797cad9fbdb"
