@@ -1,0 +1,17 @@
+name = "sales-d1-demo"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+
+# Import `.sql` files as strings (used by src/index.ts).
+[[rules]]
+globs = ["**/*.sql"]
+type = "Text"
+fallthrough = true
+
+[assets]
+directory = "./static"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "DB"
+database_id = "00000000-0000-0000-0000-000000000001"
