@@ -133,6 +133,21 @@
         return new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }).format(n);
       }
 
+      function looksLikeCurrencyColumn(name) {
+        return /revenue|amount|price|cost|fee|total|sale|payment|balance|usd|eur|gbp/i.test(String(name));
+      }
+
+      function formatCell(columnName, value) {
+        if (value === null || value === undefined) return "—";
+        if (typeof value === "number") {
+          if (looksLikeCurrencyColumn(columnName)) return formatMoney(value);
+          if (!Number.isInteger(value)) return formatNumber(value);
+          return new Intl.NumberFormat(undefined, { maximumFractionDigits: 0 }).format(value);
+        }
+        if (typeof value === "boolean") return value ? "true" : "false";
+        return escapeHtml(String(value));
+      }
+
       function renderTable(columns, rows) {
         const thead = "<thead><tr>" + columns.map((c) => `<th>${escapeHtml(c)}</th>`).join("") + "</tr></thead>";
         const body = rows
@@ -140,21 +155,26 @@
             const cells = columns.map((c) => {
               const v = row[c];
               const isNum = typeof v === "number";
-              const cls = isNum ? " num" : "";
-              let text;
-              if (c === "revenue" || c === "avg_order_value") {
-                text = formatMoney(Number(v));
-              } else if (typeof v === "number" && !Number.isInteger(v)) {
-                text = formatNumber(v);
-              } else {
-                text = escapeHtml(String(v));
-              }
-              return `<td class="${cls.trim()}">${text}</td>`;
+              const cls = isNum ? "num" : "";
+              const text = formatCell(c, v);
+              return `<td class="${cls}">${text}</td>`;
             });
             return "<tr>" + cells.join("") + "</tr>";
           })
           .join("");
         return `<table>${thead}<tbody>${body}</tbody></table>`;
+      }
+
+      function renderTotals(totals) {
+        const entries = Object.entries(totals || {});
+        if (!entries.length) {
+          return '<div class="totals">No numeric columns to sum across rows (or empty result).</div>';
+        }
+        const bits = entries.map(
+          ([k, v]) =>
+            `<span><strong>${escapeHtml(k)}</strong> ${formatCell(k, typeof v === "number" ? v : Number(v))}</span>`
+        );
+        return `<div class="totals"><strong>Totals (rolled up)</strong> · ${bits.join(" · ")}</div>`;
       }
 
       function escapeHtml(s) {
@@ -179,12 +199,7 @@
           loading.hidden = true;
           wrap.hidden = false;
           wrap.innerHTML = renderTable(data.columns, data.rows);
-
-          const t = data.totals || {};
-          const totalsHtml = `<div class="totals">Totals (rolled up): <strong>${t.orders ?? "—"}</strong> orders, <strong>${formatMoney(
-            Number(t.revenue ?? 0)
-          )}</strong> revenue</div>`;
-          wrap.insertAdjacentHTML("beforeend", totalsHtml);
+          wrap.insertAdjacentHTML("beforeend", renderTotals(data.totals));
         } catch (e) {
           loading.hidden = true;
           errEl.hidden = false;
