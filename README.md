@@ -1,4 +1,4 @@
-# Sales demo (Cloudflare Workers + D1 + Hono)
+# Git demo
 
 Small project for Git and SQL training: learners edit files under `sql/`, run the app, and see query results. The UI loads `GET /api/summary` and expects JSON `{ title, columns, rows }`.
 
