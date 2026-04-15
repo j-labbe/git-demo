@@ -1,4 +1,3 @@
--- Example analytical query (good file to branch on for training).
 SELECT
     region,
     COUNT(*) AS orders,

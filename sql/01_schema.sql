@@ -1,4 +1,3 @@
--- Demo schema: small sales dataset for Git/SQL diffs.
 DROP TABLE IF EXISTS sales;
 CREATE TABLE sales (
     id INTEGER PRIMARY KEY,
