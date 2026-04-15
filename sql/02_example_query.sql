@@ -1,9 +1,11 @@
 -- Example analytical query (good file to branch on for training).
 SELECT
-    region,
-    COUNT(*) AS orders,
+    product,
+    COUNT(*) AS line_items,
+    COUNT(DISTINCT region) AS regions_sold,
     SUM(amount) AS revenue,
-    ROUND(AVG(amount), 2) AS avg_order_value
+    MIN(amount) AS min_sale,
+    MAX(amount) AS max_sale
 FROM sales
-GROUP BY region
+GROUP BY product
 ORDER BY revenue DESC;
