@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { query } from '../lib/db';
 import exampleQuerySql from '../sql/02_example_query.sql';
+import topUsersQuerySql from '../sql/03_top_users_query.sql';
 
 type Env = {
     DB: D1Database;
@@ -14,6 +15,16 @@ app.get('/api/summary', async (c) => {
 
     return c.json({
         title: 'Query results',
+        columns,
+        rows,
+    });
+});
+
+app.get('/api/top-users', async (c) => {
+    const { columns, rows } = await query(c.env.DB, topUsersQuerySql);
+
+    return c.json({
+        title: 'Top users by orders',
         columns,
         rows,
     });
