@@ -110,6 +110,13 @@
                 <div id="table-wrap" hidden></div>
                 <p class="error" id="error" hidden></p>
             </div>
+
+            <h1 id="top-users-title">Top users by orders</h1>
+            <div class="card">
+                <p class="loading" id="top-users-loading">Loading...</p>
+                <div id="top-users-table-wrap" hidden></div>
+                <p class="error" id="top-users-error" hidden></p>
+            </div>
         </main>
         <script>
             const moneyFmt = new Intl.NumberFormat(undefined, {
@@ -123,7 +130,9 @@
             }
 
             function looksLikeCurrencyColumn(name) {
-                return /revenue|amount|price|cost|fee|total|sale|payment|balance|usd|eur|gbp/i.test(String(name));
+                const s = String(name);
+                if (/rank|count|qty|quantity|number|num\b|_id$|id$/i.test(s)) return false;
+                return /revenue|amount|price|cost|fee|total|sale|payment|balance|usd|eur|gbp/i.test(s);
             }
 
             function formatCell(columnName, value) {
@@ -156,18 +165,18 @@
                 return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
             }
 
-            async function run() {
-                const loading = document.getElementById('loading');
-                const errEl = document.getElementById('error');
-                const wrap = document.getElementById('table-wrap');
-                const titleEl = document.getElementById('title');
+            async function loadSection({ url, loadingId, errorId, wrapId, titleId, fallbackTitle }) {
+                const loading = document.getElementById(loadingId);
+                const errEl = document.getElementById(errorId);
+                const wrap = document.getElementById(wrapId);
+                const titleEl = document.getElementById(titleId);
 
                 try {
-                    const res = await fetch('/api/summary');
+                    const res = await fetch(url);
                     if (!res.ok) throw new Error(res.statusText || String(res.status));
                     const data = await res.json();
 
-                    titleEl.textContent = data.title || 'Sales aggregation';
+                    titleEl.textContent = data.title || fallbackTitle;
                     wrap.hidden = false;
                     wrap.innerHTML = renderTable(data.columns, data.rows);
                 } catch (e) {
@@ -179,7 +188,23 @@
                 }
             }
 
-            run();
+            loadSection({
+                url: '/api/summary',
+                loadingId: 'loading',
+                errorId: 'error',
+                wrapId: 'table-wrap',
+                titleId: 'title',
+                fallbackTitle: 'Sales aggregation',
+            });
+
+            loadSection({
+                url: '/api/top-users',
+                loadingId: 'top-users-loading',
+                errorId: 'top-users-error',
+                wrapId: 'top-users-table-wrap',
+                titleId: 'top-users-title',
+                fallbackTitle: 'Top users by orders',
+            });
         </script>
     </body>
 </html>
