@@ -1,3 +1,4 @@
+-- Migration number: 0002 	 2026-05-12T17:34:49.274Z
 DROP TABLE IF EXISTS sales;
 DROP TABLE IF EXISTS users;
 
@@ -13,6 +14,7 @@ CREATE TABLE sales (
     region TEXT NOT NULL,
     product TEXT NOT NULL,
     amount DECIMAL(10, 2) NOT NULL,
+    userId INTEGER NOT NULL,
     FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE
 );
 
@@ -30,9 +32,3 @@ INSERT INTO sales VALUES
     (5, 'Central', 'Gadget', 52.00, 4),
     (6, 'West', 'Widget', 199.00, 1);
 
-
-CREATE TABLE users (
-    userId INTEGER PRIMARY KEY,
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL
-);
